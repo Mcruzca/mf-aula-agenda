@@ -37,6 +37,13 @@ jobs:
       - name: Verificar que el remoto se puede federar
         run: test -f dist/agenda/browser/remoteEntry.json
 
+      # GitHub Pages sirve el sitio en /<repositorio>/, no en la raíz.
+      # Solo afecta a la página suelta del módulo; el shell usa remoteEntry.json.
+      - name: Ajustar rutas para GitHub Pages
+        env:
+          REPO: ${{ github.event.repository.name }}
+        run: sed -i "s|<base href=\"/\">|<base href=\"/$REPO/\">|" dist/agenda/browser/index.html
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/agenda/browser
